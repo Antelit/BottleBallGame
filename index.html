@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <div>
+        Кол-во ходов <span id="countStep">0</span>
+    </div>
+    <div class="main" id="conteinerBottle">
+      
+    </div>
+    <div>
+        <button onClick="window.location.reload();">Refresh Page</button>
+    </div>
+</body>
+<script>
+
+    conteinerBottle = document.getElementById("conteinerBottle")
+    Sters = document.getElementById("countStep")
+    //let NumBottle = getRandomArbitrary(3,10)
+    let NumBottle = 10
+    let ssssa = 0
+    let Colors = ["red", "green", "blue", "black", "yellow", "blueviolet", "darkturquoise"];
+    
+    let useColors = [];
+    let useBall = NumBottle - 2
+    let DONE = 0
+    
+    for (let indexss = 0; indexss < useBall; indexss++) {
+        useColors[indexss] = 0
+    }
+
+    for (let index = 0; index < NumBottle; index++) {
+        
+        let Bottle = selfCreateElement("div", {class: "bottle", onclick:"BottleClick(event)"})
+        if((ssssa /useBall) != 4){
+            for (let ix = 0; ix < 4; ix++) {
+                let a = Math.round(getRandomArbitrary(0, useBall - 1), 0)
+                let Ball = selfCreateElement("div", {class: "ball ball_" + (ix+1), style:"background: " + checkFreeColor(a), onclick:"BallClick(event)"})
+                Bottle.prepend(Ball)
+            }
+        }
+        conteinerBottle.appendChild(Bottle)
+    }
+
+    function checkFreeColor(index){
+        if (useColors[index] >= 4){
+            let dsa = Math.round(getRandomArbitrary(0, useBall - 1), 0)
+            return checkFreeColor(dsa)
+        }
+        else{
+            useColors[index]++
+            ssssa++
+            indexColor = Colors[index]
+        }
+        return indexColor
+    }
+
+    let BuffCurrBall
+    function BallClick(event){
+        CurrntEllSetPosition(event.target.parentNode.children[0])
+    }
+
+    function BottleClick(event){
+        if(event.target.classList.contains("bottle")){
+            if(event.target.children.length != 0 && !BuffCurrBall){
+                CurrntEllSetPosition(event.target.children[0]);
+            }
+            else if (event.target.children.length != 0 && BuffCurrBall)
+                MoveBall(event);
+            else{
+                if(BuffCurrBall)
+                    MoveBall(event);
+            }
+        }
+        
+    }
+    function MoveBall(event){
+        if(event.target.children.length == 4){}
+        else if (event.target.children.length ==0 || (event.target == BuffCurrBall.parentNode))
+            newPosition(event)
+        else{
+            if (event.target.children[0].style.background == BuffCurrBall.style.background)
+                newPosition(event)
+        }
+    }
+
+    function newPosition(event){
+        Sters.innerHTML = parseInt(Sters.innerHTML) + 1;
+        BuffCurrBall.style.top = ""
+        BuffCurrBall.classList.remove(BuffCurrBall.classList[1])
+        if (BuffCurrBall.parentNode != event.target)
+            BuffCurrBall.classList.add("ball_" + (event.target.children.length + 1))
+        else
+            BuffCurrBall.classList.add("ball_" + (event.target.children.length))
+        event.target.prepend(BuffCurrBall)
+        
+        if(event.target.children.length == 4){
+            let f = event.target.children
+            let g = BuffCurrBall.style.background
+            let h = true
+            for (let index = 0; index < event.target.children.length; index++) {
+                if(f[index].style.background != g)
+                    h = false
+            }
+            if(h){
+                event.target.style.background = "lightgreen"
+                DONE++
+                if(DONE == useBall)
+                    alert("Сделал за " + parseInt(Sters.innerHTML) + " ходов!")
+            }
+        }
+        BuffCurrBall = null
+    }
+    function CurrntEllSetPosition(CurrBall){
+        //background: lightgreen
+        if(CurrBall != BuffCurrBall && BuffCurrBall)
+            BuffCurrBall.style.top = ""
+
+        BuffCurrBall = CurrBall
+
+        if(CurrBall.style.top){
+            CurrBall.style.top = ""
+            CurrBall = null
+        }
+        else
+            CurrBall.style.top = "-60px"
+    }
+
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function selfCreateElement(typeElement, params){
+        let el  = document.createElement(typeElement)
+        if(params != undefined) {
+            if (params.id)
+                el.setAttribute("id", params.id)
+            if (params.class)
+                el.setAttribute("class", params.class)
+            if (params.value) {
+                if (typeElement == 'textarea')
+                    el.innerText = params.value
+                else
+                    el.setAttribute("value", params.value)
+            }
+            if (params.type)
+                el.setAttribute("type", params.type)
+            if (params.style)
+                el.setAttribute("style", params.style)
+            if (params.type == "checkbox" && params.checked)
+                el.setAttribute("checked", params.checked)
+            if (params.innerHTML)
+                el.innerHTML = params.innerHTML
+            if (params.href)
+                el.href = params.href
+            if (params.innerText)
+                el.innerText = params.innerText
+            if (params.disabled)
+                el.setAttribute("disabled", params.disabled)
+            if (params.for)
+                el.setAttribute("for", params.for)
+
+            if (params.data_parent)
+                el.setAttribute("data-parent", params.data_parent)
+            if (params.data_parentNode)
+                el.setAttribute("data-parentNode", params.data_parentNode)
+            if (params.data_treeLevel)
+                el.setAttribute("data-treeLevel", params.data_treeLevel)
+            if (params.data_hasJob)
+                el.setAttribute("data-hasJob", params.data_hasJob)
+
+            if(params.onclick)
+                el.setAttribute("onclick", params.onclick)
+            if(params.onblur)
+                el.setAttribute("onblur", params.onblur)
+            if(params.onkeydown)
+                el.setAttribute("onkeydown", params.onkeydown)
+            if(params.onkeyup)
+                el.setAttribute("onkeyup", params.onkeyup)
+        }
+        return el
+    }
+
+</script>
+<style>
+    .main{
+        top: 100px;
+        position: absolute;
+        left: 100px;
+    }
+    .bottle{
+        width: 56px;
+        height: 220px;
+        border: 1px solid;
+        border-top: none;
+        margin: 10px;
+        float: left;
+        position: relative;
+    }
+    .ball{
+        border: 1px solid black;
+        height: 50px;
+        width: 50px;
+        border-radius: 50px;
+        margin: 2px;
+    }
+    .ball_1{
+        position: absolute;
+        left: 0px;
+        top: 162px
+    }
+    .ball_2{
+        position: absolute;
+        left: 0px;
+        top: 108px
+    }
+    .ball_3{
+        position: absolute;
+        left: 0px;
+        top: 54px
+    }
+    .ball_4{
+        position: absolute;
+        left: 0px;
+        top: 0px
+    }
+</style>
